@@ -5,6 +5,8 @@
 #include<cstdio>
 #include<cstring>
 
+#define side_length 1000	//assume max area size of 1000x1000
+
 using namespace std;
 
 struct line {
@@ -36,11 +38,64 @@ vector<line*> ReadInput(string inputFile) {
 	return lines;
 }
 
+//I don't think there will be more than 32676 intersections
+vector<vector<short> > DrawGrid(vector<line*> lines) {
+	vector<vector<short> > grid(side_length, vector<short>(side_length, 0));
+
+	for(int i=0;i<lines.size();i++) {
+		//vertical line ie. x1 == x2
+		int x1 = lines[i]->A.first;
+		int x2 = lines[i]->B.first;
+		int y1 = lines[i]->A.second;
+		int y2 = lines[i]->B.second;
+		//vertical line
+		if(x1 == x2) {
+			if(y1 > y2) {
+				int tmp = y1;
+				y1 = y2;
+				y2 = tmp;
+			}
+			for(int y=y1;y<=y2;y++){
+				grid[y][x1]++;
+			}
+			continue;
+		}
+
+		//horizontal line
+		if(y1 == y2) {
+			if(x1 > x2) {
+				int tmp = x1;
+				x1 = x2;
+				x2 = tmp;
+			}
+			for(int x=x1;x<=x2;x++) {
+				grid[y1][x]++;
+			}
+		}
+	}
+	return grid;
+}
+
+int CountIntersections(vector<vector<short> > grid) {
+	int counter=0;
+	for(int i=0;i<grid.size();i++){
+		for(int j=0;j<grid.size();j++){
+			if(grid[i][j]>1){
+				counter++;
+			}
+		}
+	}
+	return counter;
+}
+
 int main() {
-	vector<line*> lines = ReadInput("testinput.txt");
+	vector<line*> lines = ReadInput("input.txt");
 
 	for(int i=0;i<lines.size();i++){
 		printf("%d,%d -> %d,%d\n", lines[i]->A.first,lines[i]->A.second,lines[i]->B.first,lines[i]->B.second);
 	}
+	vector<vector<short> > grid = DrawGrid(lines);
+	int intersections = CountIntersections(grid);
+	printf("Intersections: %d\n", intersections);
 	return 0;
 }
