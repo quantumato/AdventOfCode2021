@@ -48,6 +48,32 @@ vector<vector<short> > DrawGrid(vector<line*> lines) {
 		int x2 = lines[i]->B.first;
 		int y1 = lines[i]->A.second;
 		int y2 = lines[i]->B.second;
+		
+		//diagonals
+		if(abs(y2-y1) == abs(x2-x1)) {
+			//always go left to right
+			if(x1 > x2) {
+				int tmp = x1;
+				x1 = x2;
+				x2 = tmp;
+				tmp = y1;
+				y1 = y2;
+				y2 = tmp;
+			}
+			//SE diagonal
+			if((x1 - x2) == (y1 - y2)) {
+				for(int offset=0;(x1+offset)<=x2;offset++){
+					grid[y1+offset][x1+offset]++;
+				}
+			}
+			//SW diagonal
+			else {
+				for(int offset=0;(x1+offset)<=x2;offset++){
+					grid[y1-offset][x1+offset]++;
+				}
+			}
+		}
+
 		//vertical line
 		if(x1 == x2) {
 			if(y1 > y2) {
@@ -88,6 +114,16 @@ int CountIntersections(vector<vector<short> > grid) {
 	return counter;
 }
 
+void PrintGrid(vector<vector<short> > grid) {
+	for(int i=0;i<grid.size();i++){
+		for(int j=0;j<grid[i].size();j++){
+			printf("%d ",grid[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
 int main() {
 	vector<line*> lines = ReadInput("input.txt");
 
@@ -95,6 +131,7 @@ int main() {
 		printf("%d,%d -> %d,%d\n", lines[i]->A.first,lines[i]->A.second,lines[i]->B.first,lines[i]->B.second);
 	}
 	vector<vector<short> > grid = DrawGrid(lines);
+	PrintGrid(grid);
 	int intersections = CountIntersections(grid);
 	printf("Intersections: %d\n", intersections);
 	return 0;
