@@ -184,7 +184,7 @@ int PlayGame(input* game) {
 }
 
 int main() {
-	input* game = ReadInput("testinput.txt");
+	input* game = ReadInput("input.txt");
 	printf("boards: %d\n", game->boards.size());
 	for(int i = 0; i < game->boards.size();i++) {
 		printf("\n\n");
